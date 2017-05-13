@@ -22,7 +22,7 @@ def connect():
         first_connect = False
     l = ldap.initialize('ldap://' + ldap_server)
     try:
-        l.protocol_version = ldap.VERSION3 # parse this from config instead
+        l.protocol_version = ldap_version
         l.simple_bind_s(ldap_user, ldap_password)
         valid = True
     except ldap.INVALID_CREDENTIALS:
