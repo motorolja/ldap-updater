@@ -1,0 +1,6 @@
+{
+    "ldap_server" : "localhost",
+    "ldap_version" : 3,
+    "ldap_user" : "user",
+    "ldap_password" : "password"
+}
