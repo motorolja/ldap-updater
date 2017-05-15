@@ -1,4 +1,5 @@
 import SocketServer
+import LDAPHelper as helper
 
 class MyTCPHandler(SocketServer.StreamRequestHandler):
 
