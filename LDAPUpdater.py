@@ -1,6 +1,13 @@
 import socketserver
 import LDAPHelper as helper
 
+# TODO: parse the command line for arguments:
+# - Host
+# - Port
+# - Help
+# - Version
+
+# Defines what happens after a connection has been made
 class MyTCPHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
@@ -16,6 +23,7 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         status_message = "Request received and processed"
         self.wfile.write(status_message)
 
+# Start the socket server
 if __name__ == "__main__":
     HOST, PORT = "localhost", 4480
     # Host a TCP-server on host at a specified port and handle connections
