@@ -1,7 +1,7 @@
-import SocketServer
+import socketserver
 import LDAPHelper as helper
 
-class MyTCPHandler(SocketServer.StreamRequestHandler):
+class MyTCPHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         # Read data from the client (only for debugging)
@@ -20,6 +20,6 @@ if __name__ == "__main__":
     HOST, PORT = "localhost", 4480
     # Host a TCP-server on host at a specified port and handle connections
     # in accordance to the specified handler
-    server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
+    server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
     # Run until the program is forcefully killed
     server.serve_forever()

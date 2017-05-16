@@ -26,11 +26,11 @@ def connect():
         l.simple_bind_s(ldap_user, ldap_password)
         valid = True
     except ldap.INVALID_CREDENTIALS:
-        print "Invalid login credentials"
+        print("Invalid login credentials")
         sys.exit(-1)
-    except ldap.LDAPError, e:
+    except ldap.LDAPError as e:
         if type(e.message) == dict and e.message.has_key('desc'):
-            print e.message['desc']
+            print(e.message['desc'])
         else:
-            print e
+            print(e)
         sys.exit(-2)
