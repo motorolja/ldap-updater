@@ -32,14 +32,36 @@ def connect():
         load_config()
         first_connect = False
     # Connect to the backend
-    l = ldap.initialize('ldap://' + ldap_server)
+    backend_server = ldap.initialize('ldap://' + ldap_server)
     try:
-        l.protocol_version = ldap_version
-        l.simple_bind_s(ldap_user, ldap_password)
+        backend_server.protocol_version = ldap_version
+        backend_server.simple_bind_s(ldap_user, ldap_password)
         valid = True
+        return backend_server
     except ldap.INVALID_CREDENTIALS:
         print("Invalid login credentials")
         sys.exit(-1)
+    except ldap.LDAPError as e:
+        if type(e.message) == dict and e.message.has_key('desc'):
+            print(e.message['desc'])
+        else:
+            print(e)
+        sys.exit(-2)
+
+# Query the LDAP backend
+def find_users(backend_server, base_dn, search_scope, search_filter, search_attribute):
+    # Query result asynchronus
+    ldap_result_id = backend_server.search(basedn, search_scope, search_filter, search_attribute)
+    result_set = []
+    try:
+        while 1:
+            result_type, result_data = backend_server.result(ldap_result_id, 0)
+            if (result_data == []):
+                break
+            else:
+                if result_type == ldap.RES_SEARCH_ENTRY:
+                    result_set.append(result_data)
+        return result_set
     except ldap.LDAPError as e:
         if type(e.message) == dict and e.message.has_key('desc'):
             print(e.message['desc'])
