@@ -7,11 +7,6 @@ import json
 
 from lib.LDAPHelper import connect, find_users
 
-# TODO: parse the command line for arguments:
-# - Host
-# - Port
-# - Help
-# - Version
 HOST = ""
 PORT = 0
 

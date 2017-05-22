@@ -9,11 +9,10 @@ import json
 import ldap
 
 # TODO:
-# 1. Queries to get current list of users in LDAP database
-# 2. Compare with local list of users to see if there are any not processed
-# 3. Run external script (add script variables in config.json) if there are new users
-# 4. Update local list with the new users
-# 5. Return meaningful status message
+# 1. Compare with previous result to see if there are any not processed
+# 2. Run external script if there are diffs
+# 3. Update local list with the new users
+# 4. Return meaningful status message
 
 # Boolean to keep track of if the configuration file has been loaded
 first_connect = True

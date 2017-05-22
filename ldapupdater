@@ -4,6 +4,11 @@
 # Upon successful socket accept the program queries an LDAP-backend.
 # If the LDAP query result differ from last run, execute an external script.
 
+# TODO:
+# Add flag and implementation for:
+# --help
+# --version
+
 import argparse
 import logging
 
