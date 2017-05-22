@@ -1,6 +1,11 @@
 {
+    "host" : "localhost",
+    "port" : 389,
     "ldap_server" : "localhost",
     "ldap_version" : 3,
-    "ldap_user" : "user",
-    "ldap_password" : "password"
-}
+    "ldap_user" : "admin",
+    "search_scope" : "scope",
+    "search_filter" : "filter",
+    "search_attribute" : "attribute",
+    "external_script" : "script"
+ }

@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+# A program that listens on a tcp socket for connections.
+# Upon successful socket accept the program queries an LDAP-backend.
+# If the LDAP query result differ from last run, execute an external script.
+
+import argparse
+import logging
+
+from lib.UpdaterServer import run_updater_server
+
+def main(args):
+    level = logging.WARNING
+    if args.debug:
+        level = logging.DEBUG
+    logging.basicConfig(format='%(levelname)s:%(message)s', level=level)
+
+    run_updater_server(args.config_file)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--version')
+    parser.add_argument('--debug', action='store_true')
+    parser.add_argument('--config',
+                        dest='config_file',
+                        type=str,
+                        default="config.json")
+
+    args = parser.parse_args()
+
+    main(args)
