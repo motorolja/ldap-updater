@@ -4,17 +4,17 @@
 # Upon successful socket accept the program queries an LDAP-backend.
 # If the LDAP query result differ from last run, execute an external script.
 
-# TODO:
-# Add flag and implementation for:
-# --help
-# --version
-
 import argparse
 import logging
 
 from lib.UpdaterServer import run_updater_server
 
+VERSION = "0.1"
+
 def main(args):
+    if args.version:
+        print("ldapupdater version: " + VERSION)
+        exit(0)
     level = logging.WARNING
     if args.debug:
         level = logging.DEBUG
@@ -24,9 +24,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--version')
-    parser.add_argument('--debug', action='store_true')
-    parser.add_argument('--config',
+    parser.add_argument('--version', '-v', action='store_true')
+    parser.add_argument('--debug', '-d', action='store_true')
+    parser.add_argument('--config', '-c',
                         dest='config_file',
                         type=str,
                         default="config.json")
