@@ -5,10 +5,11 @@ import socketserver
 import logging
 import json
 
-from lib.LDAPHelper import connect, find_users
+from lib.LDAPHelper import run_query
 
 HOST = ""
 PORT = 0
+LDAP_CONFIG = ""
 
 # Defines what happens after a connection has been made
 class MyTCPHandler(socketserver.StreamRequestHandler):
@@ -22,8 +23,7 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         logging.debug("{} wrote:".format(self.client_address[0]))
         logging.debug(self.data)
 
-        ldap_backend = connect()
-        find_users(ldap_backend)
+        run_query(LDAP_CONFIG)
         # Reply to the client to it closes the socket.
         # self.wfile is a file-like object used to write back
         status_message = "Request received and processed"
@@ -40,7 +40,8 @@ def load_socketserver_config(config_file):
     logging.info("Loaded socketserver config")
 
 # Start the socket server
-def run_updater_server(config_file = "config.json"):
+def run_updater_server(config_file = "config.json", ldap_config = "config.json"):
+    LDAP_CONFIG = ldap_config
     # Load socketserver config
     load_socketserver_config(config_file)
     # Host a TCP-server on host at a specified port and handle connections

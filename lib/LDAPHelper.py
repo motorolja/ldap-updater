@@ -62,7 +62,7 @@ def connect(config_file = "config.json"):
         sys.exit(-2)
 
 # Query the LDAP backend
-def find_users(backend_server):
+def ldap_query(backend_server):
     logging.info("Starting to query LDAP server")
     # Query result asynchronus
     ldap_result_id = backend_server.search(basedn, search_scope, search_filter, search_attribute)
@@ -83,3 +83,8 @@ def find_users(backend_server):
         else:
             logging.error(e)
         sys.exit(-2)
+
+# Handle for executing predefined query
+def run_query(config_file):
+    server = connect(config_file)
+    result = ldap_query(server)
