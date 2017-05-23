@@ -18,8 +18,9 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
 
         # self.rfile is a file-like object created by the handler;
         self.data = self.rfile.readline().strip()
-        logging.info("{} wrote:".format(self.client_address[0]))
-        logging.info(self.data)
+        logging.info("Connection accepted from: {}".format(self.client_address[0]))
+        logging.debug("{} wrote:".format(self.client_address[0]))
+        logging.debug(self.data)
 
         ldap_backend = connect()
         find_users(ldap_backend)
@@ -30,10 +31,13 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
 
 # Load the socketserver configuration from file
 def load_socketserver_config(config_file):
+    logging.debug("Opening socketserver config: " + config_file)
     with open(config_file, 'r') as f:
         config = json.load(f)
+    logging.debug("Reading socketserver config")
     HOST = config['host']
     PORT = config['port']
+    logging.info("Loaded socketserver config")
 
 # Start the socket server
 def run_updater_server(config_file = "config.json"):
@@ -41,7 +45,12 @@ def run_updater_server(config_file = "config.json"):
     load_socketserver_config(config_file)
     # Host a TCP-server on host at a specified port and handle connections
     # in accordance to the specified handler
+    logging.info("Attempting to listen on {host} tcp port {port}"
+                 .format(host = HOST, port = PORT))
+    socketserver.TCPServer.allow_reuse_address = True
     server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+
+    logging.info("Now serving connections (abort with crtl-c).")
     # Run until the program is forcefully killed
     try:
         server.serve_forever()

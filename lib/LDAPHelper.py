@@ -19,8 +19,10 @@ first_connect = True
 
 # Load the configuration
 def load_config(config_file):
+    logging.debug("Opening ldap config: " + config_file)
     with open(config_file, 'r') as f:
         config = json.load(f)
+    logging.debug("Reading ldap config")
     ldap_server = config['ldap_server']
     ldap_version = config['ldap_version']
     ldap_user = config['ldap_user']
@@ -31,6 +33,7 @@ def load_config(config_file):
         ldap_password = getpass.getpass()
     except getpass.GetPassWarning:
         logging.info("Warning: System does not support echo free input, password input may be echoed")
+    logging.info("Loaded LDAP config")
 
 # Connect to the LDAP backend
 def connect(config_file = "config.json"):
@@ -38,12 +41,15 @@ def connect(config_file = "config.json"):
     if first_connect:
         load_config(config_file)
         first_connect = False
+    logging.info("Trying to establish connection to LDAP server: {server}"
+                 .format(server = ldap_server))
     # Connect to the backend
     backend_server = ldap.initialize('ldap://' + ldap_server)
     try:
         backend_server.protocol_version = ldap_version
         backend_server.simple_bind_s(ldap_user, ldap_password)
         valid = True
+        logging.info("Established connection to LDAP server")
         return backend_server
     except ldap.INVALID_CREDENTIALS:
         logging.error("Invalid login credentials")
@@ -57,6 +63,7 @@ def connect(config_file = "config.json"):
 
 # Query the LDAP backend
 def find_users(backend_server):
+    logging.info("Starting to query LDAP server")
     # Query result asynchronus
     ldap_result_id = backend_server.search(basedn, search_scope, search_filter, search_attribute)
     result_set = []
@@ -68,6 +75,7 @@ def find_users(backend_server):
             else:
                 if result_type == ldap.RES_SEARCH_ENTRY:
                     result_set.append(result_data)
+        logging.info("Finished with query to LDAP server")
         return result_set
     except ldap.LDAPError as e:
         if type(e.message) == dict and e.message.has_key('desc'):
