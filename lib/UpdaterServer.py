@@ -50,7 +50,7 @@ def changed_since_last_query(new_query_result):
        changed = True
     else:
         with open(LAST_RUN, 'r') as f:
-            for lineA in f and lineB in new_query_result:
+            for lineA in f, lineB in new_query_result:
                 if lineA != lineB:
                     changed = True
                     break
