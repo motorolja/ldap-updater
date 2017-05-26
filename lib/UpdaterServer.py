@@ -12,6 +12,7 @@ HOST = ""
 PORT = 0
 LDAP_CONFIG = ""
 EXTERNAL_SCRIPT = ""
+LAST_RUN = "lastrun"
 
 # Defines what happens after a connection has been made
 class MyTCPHandler(socketserver.StreamRequestHandler):
@@ -27,19 +28,38 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         # Get the LDAP query result
         query_result = run_query(LDAP_CONFIG)
         # Compare with lastrun, if no diff do not execute external script
-
-        # Pass the result to the external script
-        logging.info("Passing query result to external script")
-        try:
-            subprocess.check_call(EXTERNAL_SCRIPT, query_result)
-        except subprocess.CalledProcessError as cpe:
-            logging.error(cpe)
-            logging.error("Error while trying to run external script: "
-                          + EXTERNAL_SCRIPT)
-        # Reply to the client to it closes the socket.
-        # self.wfile is a file-like object used to write back
+        if changed_since_last_query(query_result):
+            # Pass the result to the external script
+            logging.info("Passing query result to external script")
+            try:
+                subprocess.check_call(EXTERNAL_SCRIPT, LAST_RUN)
+            except subprocess.CalledProcessError as cpe:
+                logging.error(cpe)
+                logging.error("Error while trying to run external script: "
+                              + EXTERNAL_SCRIPT)
+                # Reply to the client to it closes the socket.
+                # self.wfile is a file-like object used to write back
         status_message = "Request received and processed"
         self.wfile.write(status_message)
+
+# Check if the query is the same since last run
+def changed_since_last_query(new_query_result):
+    changed = False
+    # If there is no data on last run create the file
+    if not os.path.exists(LAST_RUN):
+       changed = True
+    else:
+        with open(LAST_RUN, 'r') as f:
+            for lineA in f and lineB in new_query_result:
+                if lineA != lineB:
+                    changed = True
+                    break
+    if changed:
+        # Write the query result to file
+        with open(LAST_RUN, 'w+') as f:
+            f.write(new_query_result)
+    return changed
+
 
 # Load the server and TCP Handler configuration from file
 def load_server_handler_config(config_file):
