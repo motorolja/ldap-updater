@@ -88,3 +88,4 @@ def ldap_query(backend_server):
 def run_query(config_file):
     server = connect(config_file)
     result = ldap_query(server)
+    return result
