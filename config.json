@@ -4,6 +4,7 @@
     "ldap_server" : "localhost",
     "ldap_version" : 3,
     "ldap_user" : "admin",
+    "basedn" : "dn",
     "search_scope" : "scope",
     "search_filter" : "filter",
     "search_attribute" : "attribute",
